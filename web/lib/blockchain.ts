@@ -127,11 +127,80 @@ export async function submitAd(
 export async function getAdvertiserAds(accountAddress: string) {
   const api = await getApi()
   
-  // Query all ads and filter by advertiser
-  // This is a simplified version - you'd need to implement proper querying
-  const ads = []
+  try {
+    // Get all ads by iterating through ad IDs
+    // Note: This is a simplified approach. In production, you'd use storage iteration
+    const ads: any[] = []
+    
+    // Try to get ads up to a reasonable limit
+    // In a real implementation, you'd use storage iteration or an RPC method
+    for (let i = 0; i < 100; i++) {
+      try {
+        const ad = await api.query.ads.ads(i)
+        if (ad.isSome) {
+          const adData = ad.unwrap()
+          // Check if this ad belongs to the advertiser
+          if (adData.advertiser.toString() === accountAddress) {
+            ads.push({
+              id: i,
+              name: Buffer.from(adData.name).toString('utf-8'),
+              description: Buffer.from(adData.description).toString('utf-8'),
+              ipfsCid: Buffer.from(adData.ipfs_cid).toString('utf-8'),
+              funding: adData.funding.toString(),
+              remainingBudget: adData.remaining_budget.toString(),
+              views: adData.views.toNumber(),
+              active: adData.active,
+            })
+          }
+        }
+      } catch (e) {
+        // Ad doesn't exist, continue
+        break
+      }
+    }
+    
+    return ads
+  } catch (error) {
+    console.error('Error fetching advertiser ads:', error)
+    return []
+  }
+}
+
+export async function checkAdvertiserRegistration(accountAddress: string): Promise<boolean> {
+  const api = await getApi()
   
-  return ads
+  try {
+    const profile = await api.query.ads.advertiserProfiles(accountAddress)
+    return profile.isSome && profile.unwrap().active
+  } catch (error) {
+    console.error('Error checking advertiser registration:', error)
+    return false
+  }
+}
+
+export async function getAvailableAdSpots(): Promise<number[]> {
+  const api = await getApi()
+  
+  try {
+    const spots: number[] = []
+    
+    // Get available spots (simplified - iterate through spots)
+    for (let i = 0; i < 100; i++) {
+      try {
+        const spot = await api.query.ads.adSpots(i)
+        if (spot.isSome && spot.unwrap().available) {
+          spots.push(i)
+        }
+      } catch (e) {
+        break
+      }
+    }
+    
+    return spots
+  } catch (error) {
+    console.error('Error fetching ad spots:', error)
+    return []
+  }
 }
 
 export async function getAdMetrics(adId: number) {
@@ -141,4 +210,14 @@ export async function getAdMetrics(adId: number) {
   const metrics = await api.query.adTracking.adMetrics(adId)
   
   return metrics.toJSON()
+}
+
+/**
+ * Get IPFS video URL for an ad
+ */
+export function getAdVideoUrl(ipfsCid: string, useCrust: boolean = true): string {
+  if (useCrust) {
+    return `https://crustgateway.io/ipfs/${ipfsCid}`;
+  }
+  return `https://ipfs.io/ipfs/${ipfsCid}`;
 }

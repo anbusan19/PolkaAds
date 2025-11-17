@@ -11,6 +11,7 @@ pub use pallet::*;
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
+	use pallet_ads::Pallet as AdsPallet;
 
 	#[pallet::pallet]
 	pub struct Pallet<T>(_);
@@ -22,6 +23,9 @@ pub mod pallet {
 		/// Minimum fee amount that can be sponsored
 		#[pallet::constant]
 		type MinSponsorshipAmount: Get<u128>;
+		
+		/// Reference to Ads pallet for checking ad budgets
+		type AdsPallet: frame_support::traits::PalletInfo;
 	}
 
 	/// Sponsorship request structure
@@ -161,6 +165,11 @@ pub mod pallet {
 				ensure!(request.user == who, DispatchError::BadOrigin);
 				ensure!(request.verified, Error::<T>::AdViewNotVerified);
 				ensure!(!request.sponsored, Error::<T>::AlreadySponsored);
+				
+				// Check if ad has sufficient budget
+				// Note: This requires accessing the Ads pallet storage
+				// In a real implementation, you'd use a trait bound or storage access
+				// For now, we'll just track the sponsorship
 				
 				// Mark as sponsored
 				request.sponsored = true;

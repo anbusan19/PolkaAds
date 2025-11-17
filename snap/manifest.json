@@ -1,0 +1,29 @@
+{
+  "version": "0.1.0",
+  "description": "PolkaAds - Watch ads to get sponsored transactions on Polkadot",
+  "proposedName": "PolkaAds",
+  "source": {
+    "shasum": "YOUR_SHA256_HASH_HERE",
+    "location": {
+      "npm": {
+        "filePath": "dist/index.js",
+        "packageName": "polkaads-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_dialog": {},
+    "snap_manageState": {},
+    "endowment:network-access": {
+      "allow": [
+        "http://127.0.0.1:9944",
+        "https://ipfs.io",
+        "https://crustgateway.io"
+      ]
+    }
+  },
+  "manifestVersion": "0.1"
+}
+
+

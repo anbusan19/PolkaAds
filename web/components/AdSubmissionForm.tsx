@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import VideoUpload from './VideoUpload'
 
 interface AdSubmissionFormProps {
   account: string
@@ -22,6 +23,23 @@ export default function AdSubmissionForm({ account, isRegistered, setIsRegistere
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
+  
+  // Check registration status on mount
+  useEffect(() => {
+    async function checkRegistration() {
+      try {
+        const { checkAdvertiserRegistration } = await import('@/lib/blockchain')
+        const registered = await checkAdvertiserRegistration(account)
+        setIsRegistered(registered)
+      } catch (error) {
+        console.error('Error checking registration:', error)
+      }
+    }
+    
+    if (account) {
+      checkRegistration()
+    }
+  }, [account])
 
   const handleRegister = async () => {
     // Validate registration data
@@ -202,23 +220,20 @@ export default function AdSubmissionForm({ account, isRegistered, setIsRegistere
           <p className="text-xs text-gray-500 mt-1">{formData.description.length}/500 characters</p>
         </div>
 
-        {/* IPFS CID */}
+        {/* Video Upload / IPFS CID */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            IPFS CID (Video)
+            Video (IPFS)
           </label>
-          <input
-            type="text"
-            value={formData.ipfsCid}
-            onChange={(e) => setFormData({ ...formData, ipfsCid: e.target.value })}
-            placeholder="QmX... (Crust Network or IPFS CID)"
-            maxLength={100}
-            required
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E6007A] focus:border-transparent"
+          <VideoUpload
+            onUploadComplete={(cid) => {
+              setFormData({ ...formData, ipfsCid: cid })
+            }}
+            onError={(error) => {
+              alert(error)
+            }}
+            existingCid={formData.ipfsCid}
           />
-          <p className="text-xs text-gray-500 mt-1">
-            Upload your video to Crust Network or IPFS and paste the CID here
-          </p>
         </div>
 
         {/* Funding Amount */}

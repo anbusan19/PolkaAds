@@ -279,6 +279,7 @@ impl pallet_ads::Config for Runtime {
 impl pallet_fee_sponsorship::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type MinSponsorshipAmount = ConstU128<1_000_000>;
+	type AdsPallet = Ads;
 }
 
 impl pallet_ad_tracking::Config for Runtime {

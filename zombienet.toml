@@ -1,0 +1,51 @@
+[relaychain]
+chain = "rococo"
+default_command = "polkadot-sdk/target/release/polkadot-omni-node"
+default_args = ["-lparachain=debug"]
+
+[[relaychain.nodes]]
+name = "alice"
+validator = true
+rpc_port = 9944
+ws_port = 9945
+p2p_port = 30333
+
+[[relaychain.nodes]]
+name = "bob"
+validator = true
+rpc_port = 9946
+ws_port = 9947
+p2p_port = 30334
+
+[[parachains]]
+id = 2000
+chain = "polkaads"
+default_command = "polkadot-sdk/target/release/polkadot-omni-node"
+default_args = ["-lparachain=debug"]
+
+[[parachains.collators]]
+name = "polkaads-collator"
+command = "polkadot-sdk/target/release/polkadot-omni-node"
+args = [
+    "--collator",
+    "--parachain-id=2000",
+    "--chain=polkaads",
+    "--base-path=./data/polkaads",
+    "--port=30335",
+    "--rpc-port=9948",
+    "--ws-port=9949",
+]
+
+[[parachains.collators]]
+name = "polkaads-collator-2"
+command = "polkadot-sdk/target/release/polkadot-omni-node"
+args = [
+    "--collator",
+    "--parachain-id=2000",
+    "--chain=polkaads",
+    "--base-path=./data/polkaads-2",
+    "--port=30336",
+    "--rpc-port=9950",
+    "--ws-port=9951",
+]
+

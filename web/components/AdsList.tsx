@@ -22,9 +22,24 @@ export default function AdsList({ account }: AdsListProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // TODO: Fetch ads from blockchain
-    // For now, show empty state
-    setLoading(false)
+    async function fetchAds() {
+      if (!account) {
+        setLoading(false)
+        return
+      }
+      
+      try {
+        const { getAdvertiserAds } = await import('@/lib/blockchain')
+        const fetchedAds = await getAdvertiserAds(account)
+        setAds(fetchedAds)
+      } catch (error) {
+        console.error('Error fetching ads:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchAds()
   }, [account])
 
   if (loading) {

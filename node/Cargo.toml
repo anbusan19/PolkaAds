@@ -1,0 +1,78 @@
+[package]
+name = "polkaads-node"
+version = "0.1.0"
+description = "PolkaAds blockchain node"
+authors = ["PolkaAds Team"]
+license = "MIT"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "polkaads-node"
+path = "src/main.rs"
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.6.1", default-features = false, features = ["derive"] }
+scale-info = { version = "2.10.0", default-features = false, features = ["derive"] }
+
+# Runtime
+polkaads-runtime = { path = "../runtime", default-features = false }
+
+# Substrate dependencies (client dependencies use default-features = true)
+sc-cli = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-client-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-executor = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-network = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-service = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-consensus = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-rpc = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-rpc-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sc-telemetry = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true, optional = true }
+
+# Primitives (node code always uses std, so use default-features = true)
+sp-api = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-block-builder = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-blockchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-consensus-aura = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-consensus-grandpa = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-inherents = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-io = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-offchain = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-session = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-timestamp = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-transaction-pool = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+sp-version = { git = "https://github.com/paritytech/polkadot-sdk.git", branch = "stable2409", default-features = true }
+
+# RPC
+jsonrpc-core = "18.0"
+jsonrpc-derive = "18.0"
+jsonrpc-pubsub = "18.0"
+jsonrpc-ws-server = "18.0"
+
+# Other
+futures = "0.3"
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"scale-info/std",
+	"polkaads-runtime/std",
+	"serde/std",
+	"serde_json/std",
+]
+runtime-benchmarks = [
+	"polkaads-runtime/runtime-benchmarks",
+]
+try-runtime = [
+	"polkaads-runtime/try-runtime",
+]
+

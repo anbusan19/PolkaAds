@@ -205,18 +205,24 @@ yarn install
 
 ### Running the Development Environment
 
+**Note**: The node implementation is currently a placeholder. See [RUNNING.md](./RUNNING.md) for detailed setup instructions.
+
 ```bash
-# Terminal 1: Start Substrate node
-./target/release/polkaads-node --dev
+# Terminal 1: Start Substrate node (see RUNNING.md for setup)
+# Option A: Use Substrate node template (recommended)
+# Option B: Build runtime only for testing
 
 # Terminal 2: Start frontend
 cd web
 npm run dev
 
-# Terminal 3: Start AI agent
+# Terminal 3: Start AI agent (optional)
 cd ai-agent
-npm run start
+npm install
+npm start
 ```
+
+**Quick Start**: See [RUNNING.md](./RUNNING.md) for complete setup instructions.
 
 ## Configuration
 
