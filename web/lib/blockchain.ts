@@ -221,3 +221,64 @@ export function getAdVideoUrl(ipfsCid: string, useCrust: boolean = true): string
   }
   return `https://ipfs.io/ipfs/${ipfsCid}`;
 }
+
+/**
+ * Get all active ads with remaining budget
+ */
+export async function getAllActiveAds() {
+  const api = await getApi()
+  
+  try {
+    const ads: any[] = []
+    
+    // Query all ads (simplified - in production, use proper iteration)
+    for (let i = 0; i < 100; i++) {
+      try {
+        const ad = await api.query.ads.ads(i)
+        if (ad.isSome) {
+          const adData = ad.unwrap()
+          if (adData.active) {
+            // Check if ad has remaining budget
+            const remainingBudget = adData.remaining_budget.toString()
+            if (parseInt(remainingBudget) > 0) {
+              const ipfsCid = Buffer.from(adData.ipfs_cid).toString('utf-8')
+              ads.push({
+                adId: i,
+                name: Buffer.from(adData.name).toString('utf-8'),
+                description: Buffer.from(adData.description).toString('utf-8'),
+                ipfsCid,
+                advertiser: adData.advertiser.toString(),
+                funding: adData.funding.toString(),
+                remainingBudget,
+                videoUrl: getAdVideoUrl(ipfsCid),
+              })
+            }
+          }
+        }
+      } catch (e) {
+        // Ad doesn't exist, continue
+        break
+      }
+    }
+    
+    return ads
+  } catch (error) {
+    console.error('Error fetching active ads:', error)
+    return []
+  }
+}
+
+/**
+ * Get a random ad from available active ads
+ */
+export async function getRandomAd() {
+  const activeAds = await getAllActiveAds()
+  
+  if (activeAds.length === 0) {
+    return null
+  }
+  
+  // Randomly select an ad
+  const randomIndex = Math.floor(Math.random() * activeAds.length)
+  return activeAds[randomIndex]
+}

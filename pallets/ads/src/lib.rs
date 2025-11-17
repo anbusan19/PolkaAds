@@ -180,7 +180,7 @@ pub mod pallet {
 	impl<T: Config> Pallet<T> {
 		/// Create a new ad spot
 		#[pallet::call_index(0)]
-		#[pallet::weight(10_000)]
+		#[pallet::weight(0)]
 		pub fn create_ad_spot(origin: OriginFor<T>) -> DispatchResult {
 			ensure_root(origin)?;
 			
@@ -207,7 +207,7 @@ pub mod pallet {
 		/// The deposit is held in reserve and can be withdrawn later.
 		/// An advertiser must be registered before they can submit ads.
 		#[pallet::call_index(1)]
-		#[pallet::weight(25_000)]
+		#[pallet::weight(0)]
 		pub fn register_advertiser(
 			origin: OriginFor<T>,
 			name: Vec<u8>,
@@ -274,7 +274,7 @@ pub mod pallet {
 		/// This allows an advertiser to add more funds to their deposit.
 		/// Only called by the advertiser themselves.
 		#[pallet::call_index(2)]
-		#[pallet::weight(20_000)]
+		#[pallet::weight(0)]
 		pub fn increase_advertiser_deposit(
 			origin: OriginFor<T>,
 			additional_amount: BalanceOf<T>,
@@ -316,7 +316,7 @@ pub mod pallet {
 		/// This extrinsic allows an advertiser to unregister and withdraw their deposit.
 		/// All ads must be deactivated before deregistering.
 		#[pallet::call_index(3)]
-		#[pallet::weight(25_000)]
+		#[pallet::weight(0)]
 		pub fn deregister_advertiser(origin: OriginFor<T>) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 
@@ -352,7 +352,7 @@ pub mod pallet {
 
 		/// Submit an ad
 		#[pallet::call_index(4)]
-		#[pallet::weight(25_000)]
+		#[pallet::weight(0)]
 		pub fn submit_ad(
 			origin: OriginFor<T>,
 			spot_id: u32,
@@ -418,7 +418,7 @@ pub mod pallet {
 
 		/// Deactivate an ad
 		#[pallet::call_index(5)]
-		#[pallet::weight(15_000)]
+		#[pallet::weight(0)]
 		pub fn deactivate_ad(origin: OriginFor<T>, ad_id: u32) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 			

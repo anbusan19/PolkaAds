@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getApi } from '@/lib/blockchain'
+import { getApi, getRandomAd } from '@/lib/blockchain'
 import { getAdVideoUrl } from '@/lib/blockchain'
 
 interface TransactionData {
@@ -121,45 +121,38 @@ export default function TransactionModule() {
 
   const triggerSnapForTransaction = async () => {
     try {
-      // This would integrate with the SubWallet snap
-      // For now, simulate the ad flow
-
-      // Create transaction context for snap
-      const context = {
-        from: account,
-        to: formData.recipient,
-        amount: formData.amount,
-        method: 'transfer',
-        pallet: 'balances',
+      // Fetch a random ad from the blockchain
+      console.log('Fetching random ad from blockchain...')
+      
+      const randomAd = await getRandomAd()
+      
+      if (!randomAd) {
+        alert('No active ads available at the moment. Transaction will proceed without sponsorship.')
+        // Proceed with transaction without ad
+        await executeSponsoredTransaction()
+        return
       }
 
-      console.log('Requesting ad from snap with context:', context)
+      console.log('Random ad selected:', randomAd)
 
-      // Simulate snap response (in real implementation, call the snap RPC)
-      const mockAd: AdData = {
-        adId: 1,
-        name: 'Sample Ad',
-        description: 'Watch this ad to get sponsored fees',
-        videoUrl: 'https://ipfs.io/ipfs/QmSampleCID', // Would come from snap
-        advertiser: '5ABC...XYZ',
-        remainingBudget: '1000000',
+      const adData: AdData = {
+        adId: randomAd.adId,
+        name: randomAd.name,
+        description: randomAd.description,
+        videoUrl: randomAd.videoUrl,
+        advertiser: randomAd.advertiser,
+        remainingBudget: randomAd.remainingBudget,
       }
 
-      setCurrentAd(mockAd)
+      setCurrentAd(adData)
       setShowAd(true)
       setViewStartTime(Date.now())
 
-      // Simulate ad completion after 5 seconds
-      setTimeout(() => {
-        setAdCompleted(true)
-        setViewDuration(Date.now() - viewStartTime)
-        console.log('Ad completed, requesting sponsorship...')
-        setSponsorshipRequested(true)
-      }, 5000)
-
     } catch (error) {
-      console.error('Snap integration error:', error)
-      throw error
+      console.error('Error fetching ad:', error)
+      alert('Failed to fetch ad. Transaction will proceed without sponsorship.')
+      // Proceed with transaction without ad
+      await executeSponsoredTransaction()
     }
   }
 
@@ -178,7 +171,8 @@ export default function TransactionModule() {
       await new Promise((resolve, reject) => {
         api.tx.balances
           .transfer(formData.recipient, amount)
-          .signAndSend(account!, { signer: injector.signer }, ({ status, events }) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .signAndSend(account!, { signer: injector.signer }, ({ status, events }: any) => {
             if (status.isInBlock) {
               console.log(`Transaction included in block ${status.asInBlock}`)
             }
@@ -187,7 +181,8 @@ export default function TransactionModule() {
               console.log(`Transaction finalized in block ${status.asFinalized}`)
 
               // Check for errors
-              events.forEach(({ event }) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              events.forEach(({ event }: any) => {
                 if (api.events.system.ExtrinsicFailed.is(event)) {
                   reject(new Error('Transaction failed'))
                 }

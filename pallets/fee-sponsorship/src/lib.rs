@@ -11,7 +11,6 @@ pub use pallet::*;
 pub mod pallet {
 	use frame_support::pallet_prelude::*;
 	use frame_system::pallet_prelude::*;
-	use pallet_ads::Pallet as AdsPallet;
 
 	#[pallet::pallet]
 	pub struct Pallet<T>(_);
@@ -92,7 +91,7 @@ pub mod pallet {
 	impl<T: Config> Pallet<T> {
 		/// Request transaction fee sponsorship
 		#[pallet::call_index(0)]
-		#[pallet::weight(10_000)]
+		#[pallet::weight(0)]
 		pub fn sponsor_transaction(
 			origin: OriginFor<T>,
 			ad_id: u32,
@@ -135,7 +134,7 @@ pub mod pallet {
 
 		/// Verify that user watched the ad
 		#[pallet::call_index(1)]
-		#[pallet::weight(10_000)]
+		#[pallet::weight(0)]
 		pub fn verify_ad_view(origin: OriginFor<T>, request_id: u32) -> DispatchResult {
 			// In production, this would be called by an oracle or trusted source
 			ensure_root(origin)?;
@@ -155,7 +154,7 @@ pub mod pallet {
 
 		/// Execute fee reimbursement after verification
 		#[pallet::call_index(2)]
-		#[pallet::weight(10_000)]
+		#[pallet::weight(0)]
 		pub fn reimburse_fee(origin: OriginFor<T>, request_id: u32) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 			
@@ -194,7 +193,7 @@ pub mod pallet {
 
 		/// Cancel a sponsorship request
 		#[pallet::call_index(3)]
-		#[pallet::weight(10_000)]
+		#[pallet::weight(0)]
 		pub fn cancel_sponsorship(origin: OriginFor<T>, request_id: u32) -> DispatchResult {
 			let who = ensure_signed(origin)?;
 			

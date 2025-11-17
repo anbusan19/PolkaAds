@@ -46,7 +46,7 @@ async function initApi(): Promise<ApiPromise> {
 }
 
 /**
- * Fetch relevant ad based on transaction context
+ * Fetch a random ad from available active ads
  */
 async function fetchRelevantAd(context: TransactionContext): Promise<AdData | null> {
   const apiInstance = await initApi();
@@ -88,9 +88,9 @@ async function fetchRelevantAd(context: TransactionContext): Promise<AdData | nu
       return null;
     }
     
-    // Simple selection: pick first available ad
-    // In production, use AI matching based on context
-    const selectedAd = activeAds[0];
+    // Randomly select an ad from available ads
+    const randomIndex = Math.floor(Math.random() * activeAds.length);
+    const selectedAd = activeAds[randomIndex];
     
     return selectedAd;
   } catch (error) {
@@ -321,4 +321,21 @@ export async function interceptTransaction(
       
       const ad = await fetchRelevantAd(context);
       return {
-        showAd: ad !== nul
+        showAd: ad !== null,
+        ad: ad,
+      };
+    }
+    
+    // No pending sponsorship
+    return {
+      showAd: false,
+      ad: null,
+    };
+  } catch (error) {
+    console.error('Error intercepting transaction:', error);
+    return {
+      showAd: false,
+      ad: null,
+    };
+  }
+}
