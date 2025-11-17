@@ -166,6 +166,39 @@ async function requestFeeSponsorship(
 }
 
 /**
+ * Handle transaction interception for ad display
+ */
+export async function interceptTransactionForAd(
+  extrinsic: any,
+  account: string
+): Promise<{ shouldShowAd: boolean; ad: AdData | null }> {
+  try {
+    // Check if transaction qualifies for sponsorship
+    const context: TransactionContext = {
+      from: account,
+      method: extrinsic.method?.method?.toString() || 'transfer',
+      pallet: extrinsic.method?.section?.toString() || 'balances',
+    }
+
+    console.log('Intercepting transaction for ad:', context)
+
+    // Get relevant ad
+    const ad = await fetchRelevantAd(context)
+
+    return {
+      shouldShowAd: ad !== null,
+      ad: ad,
+    }
+  } catch (error) {
+    console.error('Error intercepting transaction:', error)
+    return {
+      shouldShowAd: false,
+      ad: null,
+    }
+  }
+}
+
+/**
  * Handle RPC requests from the wallet extension
  */
 export const onRpcRequest = async ({ origin, request }: any) => {
@@ -252,7 +285,12 @@ export const onRpcRequest = async ({ origin, request }: any) => {
       viewStartTime = 0;
       viewCompleted = false;
       return { success: true };
-      
+
+    case 'polkaads_intercept_transaction':
+      // Intercept transaction for ad display
+      const { extrinsic, account: interceptAccount } = request.params || {};
+      return await interceptTransactionForAd(extrinsic, interceptAccount);
+
     default:
       throw new Error(`Method not found: ${request.method}`);
   }
@@ -283,20 +321,4 @@ export async function interceptTransaction(
       
       const ad = await fetchRelevantAd(context);
       return {
-        showAd: ad !== null,
-        ad,
-      };
-    }
-    
-    return {
-      showAd: false,
-      ad: null,
-    };
-  } catch (error) {
-    console.error('Error intercepting transaction:', error);
-    return {
-      showAd: false,
-      ad: null,
-    };
-  }
-}
+        showAd: ad !== nul

@@ -2,6 +2,8 @@
 
 An AI-powered decentralized advertisement platform built on Polkadot that lets users watch ads instead of paying transaction fees, on the Polkadot ecosystem using Substrate pallets and parachain technology.
 
+![Polka Ads - Decentralized Ad Platform](PolkaAds.png)
+
 ## Project Overview
 
 PolkaAds enables a gasless transaction experience where users watch relevant ads to have their transaction fees sponsored by advertisers. The platform leverages Polkadot's unique architecture, including custom pallets, XCM for cross-chain messaging, and integration with MetaMask Snap for seamless user experience.

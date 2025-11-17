@@ -63,13 +63,19 @@ export default function Home() {
                 real-time analytics, and decentralized control without changing your tools, models, or workflow.
               </p>
               
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-6">
                 <button className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition-colors font-medium">
                   MACOS / LINUX
                 </button>
                 <button className="px-6 py-3 border border-gray-300 text-black rounded-md hover:bg-gray-50 transition-colors font-medium">
                   WINDOWS
                 </button>
+                <a
+                  href="/transactions"
+                  className="px-6 py-3 bg-[#E6007A] text-white rounded-md hover:bg-[#c00066] transition-colors font-medium"
+                >
+                  TRY TRANSACTIONS
+                </a>
               </div>
 
               {/* Terminal-like code block */}
