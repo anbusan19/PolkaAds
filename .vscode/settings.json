@@ -1,0 +1,15 @@
+{
+    "vscord.status.buttons.button1.enabled": false,
+    "vscord.status.buttons.button1.git.active.enabled": false,
+    "vscord.status.buttons.button1.git.idle.enabled": false,
+    "vscord.status.buttons.button1.git.inactive.enabled": false,
+    "vscord.status.state.enabled": false,
+    "vscord.status.state.debugging.enabled": false,
+    "vscord.status.state.idle.enabled": false,
+    "vscord.status.details.idle.enabled": false,
+    "vscord.status.details.enabled": false,
+    "vscord.status.showElapsedTime": false,
+    "vscord.status.problems.enabled": false,
+    "vscord.status.idle.check": false,
+    "vscord.status.idle.enabled": false
+}
